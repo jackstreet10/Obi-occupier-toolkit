@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OBI | Occupier Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&amp;family=Barlow+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&amp;family=DM+Mono:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --ink: #0d0d0b;
+    --rule: rgba(255,255,255,0.07);
+    --display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --body: 'Barlow', 'Helvetica Neue', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--body);
+    overflow-x: hidden;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 310px;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem 2.25rem 2rem;
+    background: var(--ink);
+    z-index: 50;
+    scrollbar-width: none;
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+
+  .sidebar-logo {
+    display: block;
+    line-height: 0;
+    margin-bottom: 2rem;
+  }
+  .sidebar-logo img { height: 56px; width: auto; }
+
+  .sidebar-title {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-desc {
+    font-family: var(--body);
+    font-size: 0.88rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.90);
+    margin-bottom: 0;
+  }
+
+  .sidebar-rule {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 1.75rem 0;
+  }
+
+  .sidebar-section-head {
+    font-family: var(--body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.85rem;
+  }
+
+  .sidebar-body {
+    font-family: var(--body);
+    font-size: 0.84rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.92);
+    margin-bottom: 0.85rem;
+  }
+
+  .sidebar-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    margin: 1.5rem 0;
+  }
+  .sidebar-stat {
+    background: var(--ink);
+    padding: 1rem 0.85rem;
+  }
+  .sidebar-stat-num {
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.02em;
+  }
+  .sidebar-stat-lbl {
+    font-family: var(--mono);
+    font-size: 0.48rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.4;
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .sidebar-nav li { margin-bottom: 0.4rem; }
+  .sidebar-nav a {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .sidebar-nav a::before {
+    content: '';
+    display: block;
+    width: 14px; height: 1px;
+    background: rgba(255,255,255,0.15);
+    transition: background 0.2s;
+  }
+  .sidebar-nav a:hover { color: rgba(255,255,255,0.8); }
+  .sidebar-nav a:hover::before { background: rgba(255,255,255,0.5); }
+
+  .sidebar-web {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.2);
+    text-decoration: none;
+    display: block;
+    margin-top: 1rem;
+    transition: color 0.2s;
+  }
+  .sidebar-web:hover { color: rgba(255,255,255,0.85); }
+
+  /* ── MAIN CONTENT ── */
+  .content {
+    margin-left: 310px;
+    flex: 1;
+    min-width: 0;
+    max-width: calc(100vw - 310px);
+    overflow-x: hidden;
+    min-height: 100vh;
+    border-left: 1px solid var(--rule);
+    box-sizing: border-box;
+  }
+
+  /* ── SERVICE BLOCKS ── */
+  .svc-intro {
+    padding: 3rem 3.5rem 1rem;
+  }
+
+  .svc-block {
+    padding: 3rem 3.5rem 4rem;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .svc-title {
+    font-family: var(--display);
+    font-size: clamp(5.5rem, 9vw, 9rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 1.25rem;
+  }
+  .phase-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .phase-headline {
+    font-family: var(--display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .phase-desc {
+    font-family: var(--body);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.90);
+    margin-bottom: 2rem;
+    max-width: 720px;
+  }
+
+  .svc-category {
+    margin-bottom: 2rem;
+  }
+  .svc-category:last-of-type { margin-bottom: 0; }
+
+  .svc-cat-head {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: #fff;
+    margin-bottom: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 1.1rem 1.4rem;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s;
+    text-align: left;
+  }
+  .svc-cat-head:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.45);
+  }
+  .svc-cat-head:hover .svc-cat-arrow { transform: translateX(4px); }
+  .svc-cat-text { flex: 1; }
+  .svc-cat-cta {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.92);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .svc-cat-arrow {
+    color: #fff;
+    font-size: 0.95rem;
+    display: inline-block;
+    transition: transform 0.25s;
+  }
+
+  .svc-pills {
+    display: flex; flex-wrap: wrap; gap: 0.35rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 0.52rem; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.58);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 0.28rem 0.6rem;
+  }
+
+  /* ── APPROACH ── */
+  #approach {
+    padding: 3rem 3.5rem 3rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.62rem; letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.92);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(2.8rem, 4.5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.0;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 2rem;
+  }
+  .section-title em {
+    font-style: italic; font-weight: 400; color: rgba(255,255,255,0.62);
+  }
+
+  .process-list { list-style: none; border-top: 1px solid var(--rule); }
+  .process-item {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.2s;
+  }
+  .process-item:hover {
+    background: rgba(255,255,255,0.02);
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .process-num-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .process-phase-lbl {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #ffffff;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .process-num {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.07);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .process-title {
+    font-family: var(--display);
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin-bottom: 0.85rem;
+  }
+  .process-title em {
+    font-style: italic; font-weight: 400; color: rgba(255,255,255,0.90); display: block;
+  }
+  .process-desc {
+    font-family: var(--body);
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: rgba(255,255,255,0.90);
+  }
+
+  /* ── CASE STUDIES ── */
+  #case-studies {
+    padding: 4.5rem 3.5rem 4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cs-list { border-top: 1px solid var(--rule); }
+  .cs-item { border-bottom: 1px solid var(--rule); }
+  .cs-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 140px 44px;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.75rem 0;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s, padding 0.2s;
+  }
+  .cs-row:hover {
+    background: rgba(255,255,255,0.03);
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    margin: 0 -0.75rem;
+  }
+  .cs-row-num {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.12);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .cs-row-meta { display: flex; flex-direction: column; gap: 0.35rem; }
+  .cs-row-tag {
+    font-family: var(--mono);
+    font-size: 0.54rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: rgba(255,255,255,0.58);
+  }
+  .cs-row-title {
+    font-family: var(--body);
+    font-size: 1.1rem; font-weight: 600;
+    line-height: 1.3; letter-spacing: 0.01em; color: #fff;
+  }
+  .cs-row-subtitle {
+    font-family: var(--mono);
+    font-size: 0.56rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(255,255,255,0.62);
+    margin-top: 0.3rem; line-height: 1.5;
+  }
+  .cs-row-cta {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.92);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-self: end;
+  }
+  .cs-row-cta .cs-cta-arrow {
+    color: #fff;
+    display: inline-block;
+    transition: transform 0.25s;
+  }
+  .cs-row:hover .cs-cta-arrow { transform: translateX(4px); }
+  .cs-toggle {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: rgba(255,255,255,0.62);
+    transition: all 0.25s;
+    flex-shrink: 0; background: transparent;
+    justify-self: end;
+  }
+  .cs-item.open .cs-toggle { background: #fff; color: var(--ink); border-color: #fff; }
+
+  .cs-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--rule);
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.9s cubic-bezier(0.23,1,0.32,1);
+  }
+  .cs-item.open .cs-panel { max-height: 8000px; }
+  .cs-cell { background: #141412; padding: 2rem 2.5rem; box-sizing: border-box; width: 100%; overflow: hidden; }
+  .cs-img {
+    width: 100%; aspect-ratio: 21/6;
+    background: #1c1c19;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.25rem;
+    position: relative; overflow: hidden;
+  }
+  .cs-img svg { opacity: 0.12; width: 44px; }
+  .cs-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ── CASE STUDY CAROUSEL ── */
+  .cs-carousel {
+    width: 100%; aspect-ratio: 21/6;
+    background: #1c1c19;
+    margin-bottom: 1.25rem;
+    position: relative; overflow: hidden;
+  }
+  .cs-carousel-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.55s cubic-bezier(0.23,1,0.32,1);
+    will-change: transform;
+  }
+  .cs-slide {
+    flex: 0 0 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .cs-slide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cs-carousel-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 42px; height: 42px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.35);
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 5;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .cs-carousel-btn:hover {
+    background: rgba(0,0,0,0.85);
+    border-color: rgba(255,255,255,0.7);
+  }
+  .cs-carousel-prev { left: 1rem; }
+  .cs-carousel-next { right: 1rem; }
+  .cs-carousel-dots {
+    position: absolute;
+    bottom: 0.85rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 5;
+  }
+  .cs-carousel-dots button {
+    width: 28px; height: 3px;
+    border: 0;
+    background: rgba(255,255,255,0.35);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s;
+  }
+  .cs-carousel-dots button.active {
+    background: #fff;
+  }
+  .cs-carousel-counter {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    padding: 0.35rem 0.6rem;
+    z-index: 5;
+    backdrop-filter: blur(4px);
+  }
+  .cs-field-label {
+    font-family: var(--mono);
+    font-size: 0.54rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(255,255,255,0.85);
+    margin-bottom: 0.6rem; margin-top: 1.5rem;
+  }
+  .cs-field-label:first-child { margin-top: 0; }
+  .cs-field-text {
+    font-family: var(--body);
+    font-size: 0.92rem; font-weight: 300;
+    line-height: 1.8; color: rgba(255,255,255,0.85);
+  }
+
+  /* ── CASE STUDY PHASES (Discover / Dream / Execute structure) ── */
+  .cs-phase-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+  }
+  .cs-section-h {
+    font-family: var(--display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    color: #fff;
+    margin-top: 1.85rem;
+    margin-bottom: 0.7rem;
+  }
+  .cs-section-h:first-of-type { margin-top: 0; }
+  .cs-section-text {
+    font-family: var(--body);
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0.65rem;
+  }
+  .cs-section-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.4rem 0 0.65rem;
+  }
+  .cs-section-list li {
+    font-family: var(--body);
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.85);
+    padding: 0.4rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .cs-section-list li::before {
+    content: '/';
+    color: rgba(255,255,255,0.3);
+    flex-shrink: 0;
+  }
+  .cs-outro {
+    font-family: var(--body);
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.92);
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    font-style: italic;
+  }
+  .cs-metrics {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--rule); margin-top: 0.75rem;
+    width: 100%; box-sizing: border-box;
+  }
+  .cs-metric { background: #1c1c19; padding: 1.25rem 1rem; }
+  .cs-metric-val { font-family: var(--display); font-size: 1.75rem; font-weight: 700; line-height: 1; margin-bottom: 0.3rem; letter-spacing: -0.02em; color: #fff; }
+  .cs-metric-lbl { font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.85); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    padding: 1.75rem 3.5rem;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--rule);
+  }
+  .footer-logo { height: 26px; width: auto; }
+  .footer-links { display: flex; gap: 2rem; list-style: none; }
+  .footer-links a { font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.22); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: rgba(255,255,255,0.65); }
+  .footer-copy { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.18); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.82); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; padding: 2rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: #141412;
+    width: 100%; max-width: 860px;
+    max-height: 88vh; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr;
+    position: relative;
+    animation: fadeUp 0.3s forwards;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-btn-close {
+    position: absolute; top: 1.25rem; right: 1.25rem;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(255,255,255,0.58); z-index: 10;
+    transition: color 0.2s;
+  }
+  .modal-btn-close:hover { color: rgba(255,255,255,0.8); }
+  .modal-l {
+    background: #0d0d0b; padding: 0;
+    display: flex; flex-direction: column; overflow: hidden;
+    position: relative;
+  }
+  .modal-photos {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px;
+    min-height: 0;
+  }
+  .modal-photo {
+    flex: 1;
+    background: #181815;
+    position: relative; overflow: hidden;
+    min-height: 0;
+  }
+  .modal-photo img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
+  .modal-photo svg { opacity: 0.1; width: 32px; }
+  .modal-l-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 2.5rem 2rem 1.75rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .modal-phase { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: #fff; margin-top: 0.7rem; margin-bottom: 0; }
+  .modal-heading { font-family: var(--display); font-size: 2.2rem; font-weight: 700; line-height: 1.0; color: #fff; text-transform: uppercase; letter-spacing: -0.01em; }
+  .modal-heading em { font-style: italic; font-weight: 400; color: rgba(255,255,255,0.80); display: block; }
+  .modal-r { padding: 2.5rem; overflow-y: auto; max-height: 88vh; background: #141412; }
+  .modal-sub {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+  }
+  .modal-sub:first-child { margin-top: 0; }
+  .modal-items { list-style: none; }
+  .modal-items li {
+    font-family: var(--body); font-size: 0.92rem; font-weight: 300;
+    line-height: 1.75; color: rgba(255,255,255,0.85);
+    padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex; align-items: flex-start; gap: 0.75rem;
+  }
+  .modal-items li::before { content: '/'; color: rgba(255,255,255,0.18); flex-shrink: 0; }
+  .modal-desc {
+    font-family: var(--body);
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.85);
+    margin-top: -0.25rem;
+    margin-bottom: 1rem;
+  }
+  .modal-outro {
+    font-family: var(--body);
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.7);
+    font-style: italic;
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* ── REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s cubic-bezier(0.23,1,0.32,1), transform 0.7s cubic-bezier(0.23,1,0.32,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 960px) {
+    .sidebar { display: none; }
+    .content { margin-left: 0; border-left: none; }
+    .svc-block, .svc-intro, #case-studies { padding: 3rem 1.75rem; }
+    .phase-headline { font-size: 1.45rem; }
+    .cs-panel { grid-template-columns: 1fr; }
+    .modal-box { grid-template-columns: 1fr; }
+    .modal-l { display: none; }
+    footer { padding: 1.5rem 1.75rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<a class="sidebar-logo" href="https://obiproperty.co.uk/" target="_blank">
+<img alt="OBI" src="data:image/jpeg;base64,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"/>
+</a>
+<h1 class="sidebar-title">Business<br/>Workplace<br/>Toolkit</h1>
+<p class="sidebar-desc">A concise view of how we help tenants plan, find and deliver high-performing workplaces.</p>
+<hr class="sidebar-rule"/>
+<div class="sidebar-section-head">About OBI</div>
+<p class="sidebar-body">Creating places for business to thrive. This is the mission statement behind the various roles of expertise at OBI, which has allowed us to consistently rank as the top-performing agent in Manchester for office transactions, since forming in 2010.</p>
+<p class="sidebar-body">Our unique access to deep market data and knowledge enables the team to secure prime offices for businesses. With expertise across flexible, fitted and furnished, and conventional workspace, from conception to completion, we can provide a holistic and comprehensive service.</p>
+<div class="sidebar-stats">
+<div class="sidebar-stat">
+<div class="sidebar-stat-num">#1</div>
+<div class="sidebar-stat-lbl">Ranked Manchester Real Estate Partner</div>
+</div>
+<div class="sidebar-stat">
+<div class="sidebar-stat-num">2010</div>
+<div class="sidebar-stat-lbl">Founded in Manchester</div>
+</div>
+<div class="sidebar-stat">
+<div class="sidebar-stat-num">360°</div>
+<div class="sidebar-stat-lbl">Integrated Service Offering</div>
+</div>
+</div>
+<a class="sidebar-web" href="https://obiproperty.co.uk/" target="_blank">www.obiproperty.co.uk</a>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="content">
+<!-- SERVICES + APPROACH (combined) -->
+<section id="services">
+<div class="svc-intro reveal">
+<h2 class="section-title">Three phases.<br/><em>One seamless journey.</em></h2>
+</div>
+<!-- DISCOVER -->
+<div class="svc-block reveal">
+<h2 class="svc-title">Discover</h2>
+<div class="phase-num">Phase 1</div>
+<h3 class="phase-headline">Secure the Right Space</h3>
+<p class="phase-desc">We work side‑by‑side with you to define the right occupational strategy and secure space on the most competitive financial terms. Clear brief. Smart search. Forensic negotiation. A joined‑up team protecting your position and driving long‑term value.</p>
+<div class="svc-category">
+<button class="svc-cat-head" onclick="openModal('transactions')" type="button">
+<span class="svc-cat-text">Transactions &amp; Asset Management</span>
+<span class="svc-cat-cta">View details <span class="svc-cat-arrow">→</span></span>
+</button>
+</div>
+<div class="svc-pills">
+<span class="pill">Office Acquisition</span>
+<span class="pill">Requirement Briefing</span>
+<span class="pill">Lease Negotiations</span>
+<span class="pill">Transaction Management</span>
+<span class="pill">Asset Management</span>
+<span class="pill">Lease Advisory</span>
+</div>
+</div>
+<!-- DREAM -->
+<div class="svc-block reveal" style="transition-delay:0.05s">
+<h2 class="svc-title">Dream</h2>
+<div class="phase-num">Phase 2</div>
+<h3 class="phase-headline">Design the Workplace</h3>
+<p class="phase-desc">We turn strategy into space, creating workplaces that attract talent, reinforce culture and give people a reason to show up. Every design decision is grounded in commercial logic and built around your people.</p>
+<div class="svc-category">
+<button class="svc-cat-head" onclick="openModal('workplace')" type="button">
+<span class="svc-cat-text">Workplace Consultancy</span>
+<span class="svc-cat-cta">View details <span class="svc-cat-arrow">→</span></span>
+</button>
+</div>
+<div class="svc-pills">
+<span class="pill">Workplace Strategy</span>
+<span class="pill">Interior Design</span>
+<span class="pill">Project Delivery</span>
+<span class="pill">Space Planning</span>
+<span class="pill">Fixtures, Furniture &amp; Equipment (FF&amp;E) Procurement</span>
+<span class="pill">Brand Integration</span>
+</div>
+</div>
+<!-- EXECUTE -->
+<div class="svc-block reveal" style="transition-delay:0.1s">
+<h2 class="svc-title">Execute</h2>
+<div class="phase-num">Phase 3</div>
+<h3 class="phase-headline">Deliver With Precision</h3>
+<p class="phase-desc">We lead delivery with discipline. Every technical dimension handled, every project on time and on budget. Our integrated Building Consultancy team ensures compliance, cost control and quality assurance from start to finish.</p>
+<div class="svc-category">
+<button class="svc-cat-head" onclick="openModal('building')" type="button">
+<span class="svc-cat-text">Building Consultancy</span>
+<span class="svc-cat-cta">View details <span class="svc-cat-arrow">→</span></span>
+</button>
+</div>
+<div class="svc-pills">
+<span class="pill">Building Surveys</span>
+<span class="pill">Dilapidations</span>
+<span class="pill">Project Management</span>
+<span class="pill">Due Diligence</span>
+<span class="pill">Defect Analysis</span>
+<span class="pill">Environmental, Social &amp; Governance (ESG) Compliance</span>
+</div>
+</div>
+</section>
+<!-- CASE STUDIES -->
+<section id="case-studies">
+<div class="reveal">
+<div class="section-eyebrow">Case Studies</div>
+<h2 class="section-title">Track <em>record.</em></h2>
+</div>
+<div class="cs-list reveal" style="transition-delay:0.1s">
+<div class="cs-item" id="cs1">
+<div class="cs-row" onclick="toggleCS('cs1')">
+<div class="cs-row-num">01</div>
+<div class="cs-row-meta">
+<div class="cs-row-title">Booking.com</div>
+<div class="cs-row-subtitle">175,000 sq ft global tech hub. Full Discover → Dream → Execute</div>
+</div>
+<div class="cs-row-cta">View details <span class="cs-cta-arrow">→</span></div>
+<div class="cs-toggle">+</div>
+</div>
+<div class="cs-panel">
+<div class="cs-cell">
+<div class="cs-carousel" data-current="0">
+<div class="cs-carousel-track">
+<div class="cs-slide"><img alt="Booking.com Manchester hub, image 1" src="Images/Booking.com 01.jpg"/></div>
+<div class="cs-slide"><img alt="Booking.com Manchester hub, image 2" src="Images/Booking.com 02.jpg"/></div>
+<div class="cs-slide"><img alt="Booking.com Manchester hub, image 3" src="Images/Booking.com 03.jpg"/></div>
+</div>
+<button class="cs-carousel-btn cs-carousel-prev" onclick="csNav(event, this, -1)" type="button" aria-label="Previous image">‹</button>
+<button class="cs-carousel-btn cs-carousel-next" onclick="csNav(event, this, 1)" type="button" aria-label="Next image">›</button>
+<div class="cs-carousel-counter"><span class="cs-carousel-cur">1</span> / 3</div>
+<div class="cs-carousel-dots">
+<button class="active" onclick="csGo(event, this, 0)" type="button" aria-label="Go to image 1"></button>
+<button onclick="csGo(event, this, 1)" type="button" aria-label="Go to image 2"></button>
+<button onclick="csGo(event, this, 2)" type="button" aria-label="Go to image 3"></button>
+</div>
+</div>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">01 / Discover</div>
+<p class="cs-section-text">Booking.com appointed OBI to define the full occupational requirement for its new Manchester hub, then secure the right building. Our targeted market search identified Manchester Goods Yard for its scale, sustainability credentials and ability to support a 175,000 sq ft consolidation. OBI negotiated Heads of Terms (HoTs) and managed the full legal process, including Licence to Alter (LTA), Schedule of Condition (SoC) and connectivity due diligence, through to completion.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">02 / Dream</div>
+<p class="cs-section-text">We developed a workplace strategy aligned to Booking.com's global culture and collaboration-led model. The interior design narrative drew inspiration from the seven continents, with each floor themed around a different region. Highlights included a 250-person auditorium, fully connected meeting suites, zen rooms, breakout zones, games rooms and external winter gardens on every floor, all designed to foster creativity, connection and wellbeing.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">03 / Execute</div>
+<p class="cs-section-text">OBI delivered Manchester's largest Category B (CAT B) fit-out in eight years, an £18.5m project delivered end-to-end through our integrated Building Consultancy team. From project management and contract administration to surveys, due diligence and dilapidations strategy, every element was managed under one roof.</p>
+<p class="cs-outro">A future-proof platform for Booking.com's continued growth in Manchester, delivered through OBI's integrated Discover → Dream → Execute model.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-field-label">Key Metrics</div>
+<div class="cs-metrics">
+<div class="cs-metric"><div class="cs-metric-val">175k</div><div class="cs-metric-lbl">Sq Ft Workspace Delivered</div></div>
+<div class="cs-metric"><div class="cs-metric-val">£18.5M</div><div class="cs-metric-lbl">CAT B Fit-Out Value</div></div>
+<div class="cs-metric"><div class="cs-metric-val">8 YRS</div><div class="cs-metric-lbl">Largest Manchester Fit-Out</div></div>
+<div class="cs-metric"><div class="cs-metric-val">1</div><div class="cs-metric-lbl">Integrated Team, End to End</div></div>
+</div>
+<div class="cs-field-label" style="margin-top:1.5rem">Services Delivered</div>
+<div class="cs-field-text">Requirement Definition / Market Search / Lease Negotiation / Workplace Strategy / Interior Design / Project Management / Asset Management</div>
+</div>
+</div>
+</div>
+<div class="cs-item" id="cs2">
+<div class="cs-row" onclick="toggleCS('cs2')">
+<div class="cs-row-num">02</div>
+<div class="cs-row-meta">
+<div class="cs-row-title">AO World</div>
+<div class="cs-row-subtitle">Manchester HQ consolidation + UK‑wide portfolio advisory</div>
+</div>
+<div class="cs-row-cta">View details <span class="cs-cta-arrow">→</span></div>
+<div class="cs-toggle">+</div>
+</div>
+<div class="cs-panel">
+<div class="cs-cell">
+<div class="cs-carousel" data-current="0">
+<div class="cs-carousel-track">
+<div class="cs-slide"><img alt="AO World Baskerville House HQ, image 1" src="Images/AO (1).JPG"/></div>
+<div class="cs-slide"><img alt="AO World Baskerville House HQ, image 2" src="Images/AO (2).JPG"/></div>
+<div class="cs-slide"><img alt="AO World Baskerville House HQ, image 3" src="Images/AO (3).JPG"/></div>
+</div>
+<button class="cs-carousel-btn cs-carousel-prev" onclick="csNav(event, this, -1)" type="button" aria-label="Previous image">‹</button>
+<button class="cs-carousel-btn cs-carousel-next" onclick="csNav(event, this, 1)" type="button" aria-label="Next image">›</button>
+<div class="cs-carousel-counter"><span class="cs-carousel-cur">1</span> / 3</div>
+<div class="cs-carousel-dots">
+<button class="active" onclick="csGo(event, this, 0)" type="button" aria-label="Go to image 1"></button>
+<button onclick="csGo(event, this, 1)" type="button" aria-label="Go to image 2"></button>
+<button onclick="csGo(event, this, 2)" type="button" aria-label="Go to image 3"></button>
+</div>
+</div>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">01 / Discover</div>
+<p class="cs-section-text">OBI advised AO World on its national real estate strategy, consolidating its Manchester HQ and aligning lease events across its UK portfolio. We identified opportunities to reduce overheads, mitigate liabilities and secure long‑term flexibility.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">02 / Dream</div>
+<p class="cs-section-text">Our workplace consultancy team re‑imagined AO's workspace to support hybrid working and collaboration, driving efficiency and cultural alignment. We developed a future‑proof design that reflected AO's brand and operational model.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">03 / Execute</div>
+<p class="cs-section-text">OBI managed lease regears, dilapidations and project delivery, securing the most competitive terms and saving over £3m in property overheads.</p>
+<p class="cs-outro">A streamlined, agile portfolio built for growth.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-field-label">Key Metrics</div>
+<div class="cs-metrics">
+<div class="cs-metric"><div class="cs-metric-val">UK</div><div class="cs-metric-lbl">Wide Portfolio Coverage</div></div>
+<div class="cs-metric"><div class="cs-metric-val">£3M+</div><div class="cs-metric-lbl">Overhead Savings Delivered</div></div>
+<div class="cs-metric"><div class="cs-metric-val">1</div><div class="cs-metric-lbl">Manchester HQ Consolidated</div></div>
+<div class="cs-metric"><div class="cs-metric-val">3</div><div class="cs-metric-lbl">Disciplines Integrated</div></div>
+</div>
+<div class="cs-field-label" style="margin-top:1.5rem">Services Delivered</div>
+<div class="cs-field-text">Strategic Advisory / Lease Regears / Workplace Strategy / Project Delivery / Dilapidations</div>
+</div>
+</div>
+</div>
+<div class="cs-item" id="cs3">
+<div class="cs-row" onclick="toggleCS('cs3')">
+<div class="cs-row-num">03</div>
+<div class="cs-row-meta">
+<div class="cs-row-title">The Beauty Tech Group</div>
+<div class="cs-row-subtitle">16,600 sq ft Alderley Park expansion. Design, delivery &amp; advisory</div>
+</div>
+<div class="cs-row-cta">View details <span class="cs-cta-arrow">→</span></div>
+<div class="cs-toggle">+</div>
+</div>
+<div class="cs-panel">
+<div class="cs-cell">
+<div class="cs-carousel" data-current="0">
+<div class="cs-carousel-track">
+<div class="cs-slide"><img alt="The Beauty Tech Group HQ, image 1" src="Images/Beauty Tech Group  (1).jpg"/></div>
+<div class="cs-slide"><img alt="The Beauty Tech Group HQ, image 2" src="Images/Beauty Tech Group  (2).jpg"/></div>
+<div class="cs-slide"><img alt="The Beauty Tech Group HQ, image 3" src="Images/Beauty Tech Group  (3).jpg"/></div>
+</div>
+<button class="cs-carousel-btn cs-carousel-prev" onclick="csNav(event, this, -1)" type="button" aria-label="Previous image">‹</button>
+<button class="cs-carousel-btn cs-carousel-next" onclick="csNav(event, this, 1)" type="button" aria-label="Next image">›</button>
+<div class="cs-carousel-counter"><span class="cs-carousel-cur">1</span> / 3</div>
+<div class="cs-carousel-dots">
+<button class="active" onclick="csGo(event, this, 0)" type="button" aria-label="Go to image 1"></button>
+<button onclick="csGo(event, this, 1)" type="button" aria-label="Go to image 2"></button>
+<button onclick="csGo(event, this, 2)" type="button" aria-label="Go to image 3"></button>
+</div>
+</div>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">01 / Discover</div>
+<p class="cs-section-text">Following earlier retail and workspace collaborations in Cheshire, OBI was instructed to support The Beauty Tech Group with the expansion of their existing workspace within Alderley Park as the business scaled toward its £300m+ Initial Public Offering (IPO).</p>
+<p class="cs-section-text">The brief covered team growth, hybrid patterns, Research and Development (R&amp;D), content creation and brand expression. Alderley Park's Glasshouse was identified for its scalability and innovation ecosystem; OBI negotiated favourable Heads of Terms (HoTs) and managed the full transaction through to completion.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">02 / Dream</div>
+<p class="cs-section-text">A wellbeing‑led design language shaped directly by The Beauty Tech Group's products: curved forms, reflective finishes and a warm, feminine aesthetic.</p>
+<p class="cs-section-text">Our scope spanned concept design through to Fixtures, Furniture and Equipment (FF&amp;E) specification, dressing and planting, creating a space that balanced brand expression, wellbeing and operational efficiency.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-phase-eyebrow">03 / Execute</div>
+<p class="cs-section-text">OBI delivered the full CAT B fit‑out, integrating Forest Stewardship Council (FSC)‑certified, low‑Volatile Organic Compound (VOC) and recycled finishes, Light Emitting Diode (LED) lighting (~40% energy reduction), biophilic planting, and a dedicated wellbeing room with a Pulsed Electromagnetic Field (PEMF) mat.</p>
+<p class="cs-outro">A future‑ready, human‑centric workspace supporting a £300m+ business and a predominantly female workforce, recognised with the 2025 Northern Design Award.</p>
+</div>
+<div class="cs-cell">
+<div class="cs-field-label">Key Metrics</div>
+<div class="cs-metrics">
+<div class="cs-metric"><div class="cs-metric-val">16,600</div><div class="cs-metric-lbl">Sq Ft Expansion</div></div>
+<div class="cs-metric"><div class="cs-metric-val">£300M+</div><div class="cs-metric-lbl">Business Valuation</div></div>
+<div class="cs-metric"><div class="cs-metric-val">40%</div><div class="cs-metric-lbl">Lighting Energy Reduction</div></div>
+<div class="cs-metric"><div class="cs-metric-val">2025</div><div class="cs-metric-lbl">Northern Design Award</div></div>
+</div>
+<div class="cs-field-label" style="margin-top:1.5rem">Services Delivered</div>
+<div class="cs-field-text">Requirement Definition / Market Search / Lease Negotiation / Workplace Strategy / Interior Design / Fit-Out Delivery / Asset Management</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer>
+<a href="https://obiproperty.co.uk/" style="display:flex;align-items:center;line-height:0;" target="_blank">
+<img alt="OBI" class="footer-logo" src="data:image/jpeg;base64,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"/>
+</a>
+<ul class="footer-links">
+<li><a href="https://obiproperty.co.uk" target="_blank">obiproperty.co.uk</a></li>
+<li><a href="https://obiproperty.co.uk/privacy-policy/" target="_blank">Privacy Policy</a></li>
+<li><a href="https://obiproperty.co.uk/about-us" target="_blank">About OBI</a></li>
+</ul>
+<div class="footer-copy">© 2025 OBI Property. All rights reserved.</div>
+</footer>
+</main>
+<!-- SERVICE MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalBg(event)">
+<div class="modal-box" id="modal-box">
+<button class="modal-btn-close" onclick="closeModal()">Close ✕</button>
+<div class="modal-l" id="modal-l"></div>
+<div class="modal-r" id="modal-r"></div>
+</div>
+</div>
+<script>
+const PHOTO_SVG = `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="28" height="20" stroke="white" stroke-width="1"/><circle cx="11" cy="14" r="3.5" stroke="white" stroke-width="1"/><path d="M2 22l8-7 5 5 5-4 12 9" stroke="white" stroke-width="1"/></svg>`;
+
+const SERVICES = {
+  transactions: {
+    phase: 'Phase One / Discover',
+    title: 'Transactions &',
+    titleItalic: 'Asset Management',
+    photos: ['Occupier briefing', 'Market search', 'Heads of Terms'],
+    photoPaths: ['Images/discover 1.jpg', 'Images/discover 2.jpg', 'Images/discover 3.jpg'],
+    sections: [
+      {
+        h: 'Requirement & Briefing',
+        desc: `We get under the skin of your business, fast. Then we build a brief that's sharp, strategic and commercially grounded.`,
+        items: [
+          'Define what you really need from your workspace',
+          'Search the market with purpose, not guesswork',
+          'Lead targeted viewings and provide clear, data‑driven shortlist analysis',
+          'Carry out technical due diligence on connectivity, specification and operational needs'
+        ],
+        outro: `This is where our Transactions & Asset Management, Workplace and Building Consultancy teams move as one. Spotting opportunities, removing risk and shaping a brief that supports growth.`
+      },
+      {
+        h: 'Negotiations',
+        desc: `This is where OBI's commercial edge kicks in.`,
+        items: [
+          'Negotiate Heads of Terms (HoTs) to secure best‑in‑market conditions',
+          'Manage the legal journey: Lease, Licence to Alter (LTA), Schedule of Condition (SoC)',
+          'Analyse break options and build strategies that protect flexibility'
+        ],
+        outro: `Direct. Tenacious. Entrepreneurial. We negotiate like we're part of your business, because for this moment, we are.`
+      },
+      {
+        h: 'End‑to‑End Transaction Management',
+        desc: `We don't disappear once the deal is agreed. We stay with you until the keys are in your hand, and long after.`,
+        items: [
+          'Manage the full transaction through to legal completion',
+          'Advise on rent reviews, renewals and regears',
+          'Track lease liabilities and provide portfolio‑level reporting'
+        ],
+        outro: 'One team. One programme. One clear path from first conversation to move‑in day.'
+      }
+    ]
+  },
+  workplace: {
+    phase: 'Phase Two / Dream',
+    title: 'Workplace',
+    titleItalic: 'Consultancy',
+    photos: ['Workplace strategy', 'Interior design & CGIs', 'Completed workplace'],
+    photoPaths: ['Images/dream 3.jpg', 'Images/dream 2.jpg', 'Images/dream 1.jpeg'],
+    sections: [
+      {
+        h: 'Strategy',
+        desc: `We build a workplace strategy rooted in who you are and where you're going.`,
+        items: [
+          'Align workspace vision with culture and business objectives',
+          'Run space utilisation surveys and headcount modelling',
+          'Create agile, hybrid and collaborative frameworks that support productivity and flexibility'
+        ],
+        outro: 'This is strategy with substance. Clear, commercial and human.'
+      },
+      {
+        h: 'Interior Design',
+        desc: `We turn strategy into a space your team can feel, and your clients can't ignore.`,
+        items: [
+          'Develop concept design through mood boards, Computer Generated Images (CGIs) and Revit models',
+          'Integrate your brand into the environment with thoughtful environmental graphics',
+          'Specify all Fixtures, Furniture & Equipment (FF&E): furniture, dressing and planting'
+        ],
+        outro: 'Design that inspires. Detail that matters. A workspace that tells your story.'
+      },
+      {
+        h: 'Delivery',
+        desc: 'We take your vision off the page and build it. On time, on budget, on brief.',
+        items: [
+          'Produce construction drawings and tender documentation',
+          'Manage full fit‑out delivery and oversee contractors',
+          'Carry out post‑occupancy evaluation to measure performance against the original brief'
+        ],
+        outro: 'This is where our Building Consultancy and Workplace teams lock in together. One programme, one team, one seamless delivery.'
+      }
+    ]
+  },
+  building: {
+    phase: 'Phase Three / Execute',
+    title: 'Building',
+    titleItalic: 'Consultancy',
+    photos: ['Survey in progress', 'Project delivery', 'Completed fit-out'],
+    photoPaths: ['Images/execute 1.jpg', 'Images/execute 2.jpg', 'Images/execute 3.jpg'],
+    sections: [
+      {
+        h: 'Project Management',
+        desc: 'Disciplined delivery across every phase of the build, with cost, programme and quality held tight from day one.',
+        items: [
+          'End‑to‑end delivery across Project Management (PM), Contract Administration (CA) and Quantity Surveying (QS)',
+          'Contractor procurement and full Construction (Design and Management) (CDM) compliance',
+          'Programme control, cost reporting and quality assurance'
+        ]
+      },
+      {
+        h: 'Building Surveys & Due Diligence',
+        desc: 'We surface the risks before they hit your balance sheet. Clear technical insight, commercial clarity.',
+        items: [
+          'Schedule of Condition (SoC) surveys to protect your position',
+          'Pre‑acquisition and pre‑lease technical due diligence',
+          'Defect analysis and capital expenditure forecasting'
+        ]
+      },
+      {
+        h: 'Dilapidations',
+        desc: 'We manage dilapidations from the moment you sign, not the moment you leave. Less exposure, better outcomes.',
+        items: [
+          'Occupier‑focused dilapidations strategy from day one',
+          'Proactive negotiations to limit financial exposure',
+          'Pragmatic, commercially driven settlements'
+        ],
+        outro: 'Delivery with precision. Protection built in from the start.'
+      }
+    ]
+  }
+};
+
+function openModal(key) {
+  const d = SERVICES[key];
+  document.getElementById('modal-l').innerHTML = `
+    <div class="modal-photos">
+      <div class="modal-photo"><img src="${d.photoPaths[0]}" alt="${d.photos[0]}"></div>
+      <div class="modal-photo"><img src="${d.photoPaths[1]}" alt="${d.photos[1]}"></div>
+      <div class="modal-photo"><img src="${d.photoPaths[2]}" alt="${d.photos[2]}"></div>
+    </div>
+    <div class="modal-l-overlay">
+      <div class="modal-heading">${d.title}<br><em>${d.titleItalic}</em></div>
+      <div class="modal-phase">${d.phase}</div>
+    </div>`;
+  let r = '';
+  d.sections.forEach(s => {
+    r += `<div class="modal-sub">${s.h}</div>`;
+    if (s.desc) r += `<p class="modal-desc">${s.desc}</p>`;
+    r += `<ul class="modal-items">`;
+    s.items.forEach(i => { r += `<li>${i}</li>`; });
+    r += '</ul>';
+    if (s.outro) r += `<p class="modal-outro">${s.outro}</p>`;
+  });
+  document.getElementById('modal-r').innerHTML = r;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalBg(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function csNav(e, btn, dir) {
+  if (e) e.stopPropagation();
+  const carousel = btn.closest('.cs-carousel');
+  const total = carousel.querySelectorAll('.cs-slide').length;
+  let current = parseInt(carousel.dataset.current || '0', 10);
+  current = (current + dir + total) % total;
+  csUpdate(carousel, current);
+}
+function csGo(e, btn, idx) {
+  if (e) e.stopPropagation();
+  const carousel = btn.closest('.cs-carousel');
+  csUpdate(carousel, idx);
+}
+function csUpdate(carousel, idx) {
+  carousel.dataset.current = idx;
+  const track = carousel.querySelector('.cs-carousel-track');
+  track.style.transform = `translateX(-${idx * 100}%)`;
+  carousel.querySelectorAll('.cs-carousel-dots button').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  const counter = carousel.querySelector('.cs-carousel-cur');
+  if (counter) counter.textContent = idx + 1;
+}
+
+function toggleCS(id) {
+  const item = document.getElementById(id);
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+
+  // Accordion behaviour: close ALL case studies first
+  document.querySelectorAll('.cs-item').forEach(el => {
+    el.classList.remove('open');
+    const t = el.querySelector('.cs-toggle');
+    if (t) t.textContent = '+';
+  });
+
+  // Then open the clicked one (unless it was already open — in which case it stays closed)
+  if (!wasOpen) {
+    item.classList.add('open');
+    const t = item.querySelector('.cs-toggle');
+    if (t) t.textContent = '−';
+  }
+}
+
+// Scroll reveal
+const revEls = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.06 });
+revEls.forEach(r => revObs.observe(r));
+
+
+</script>
+</body>
+</html>
